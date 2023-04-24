@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+# To load the secret key
+import os.path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-49n)j%ykc#hd%u=69o4gq33rc5$md)jm+k5yp=xea6eyql=)9n"
+# So we load it from django_key.txt which is included in .gitignore
+pwd = os.path.dirname(__file__)
+parent_dir = os.path.split(pwd)[0]
+filepath = os.path.join(parent_dir, "django_key.txt")
+with open(filepath) as file:
+	django_key = file.readlines()[0]
+SECRET_KEY = django_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
