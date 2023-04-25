@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import Http404
+from django.urls import reverse
+from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 
-# Create your views here.
+
+# Start to create views here

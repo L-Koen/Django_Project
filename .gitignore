@@ -1,2 +1,5 @@
 django_credentials.txt
 django_key.txt
+/restaurant/__pycache__/*
+/inventory/migrations/__pycache__/*
+*/__pycache__/*
