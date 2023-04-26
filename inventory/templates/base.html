@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<div class="header">
+	{% if user.username %}
+    <a href="{% url 'logout' %}">Log Out</a>
+  {% endif %}
+  <div class="header-content">
+    <h1 class="header-title">Restaurant Inventory</h1>
+    {% if user.username %}
+    <h3 class="header-greet">Welcome {{ user.username }}!</h3>
+    {% endif %}
+    {% comment %}
+    <a href="{% url 'ingredient' %}">Manage Ingredients</a>
+    <a href="{% url 'menuitem' %}">Manage Menu Entries</a>
+    <a href="{% url 'recepyrequirement' %}">Manage Recipies</a>
+    <a href="{% url 'purchase' %}">Check Purchases</a>
+    {% endcomment %}
+  </div>
+</div>
+
+{% block content%}
+{% endblock %}
+</html>
