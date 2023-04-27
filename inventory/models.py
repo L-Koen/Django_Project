@@ -47,7 +47,7 @@ class Ingredient(models.Model):
 class MenuItem(models.Model):
     """ Class defining the entries on the menu.
     """
-    title = models.CharField(max_length=40)
+    title = models.CharField(max_length=40, unique=True)
     price = models.FloatField(default=1.)
 
     def __str__(self):
