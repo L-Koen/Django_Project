@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import DeleteView, CreateView, UpdateView
@@ -42,25 +42,27 @@ class MenuItemDeleteView(DeleteView):
 class IngredientView(ListView):
     model = Ingredient
     template_name = "inventory/ingredients.html"
-    form_class = IngredientForm
+    context_object_name = "ingredients"
 
 
 class IngredientCreateView(CreateView):
     model = Ingredient
     template_name = "inventory/create_ingredient.html"
     form_class = IngredientCreateForm
+    success_url = reverse_lazy('ingredients')
 
 
 class IngredientUpdateView(UpdateView):
     model = Ingredient
     template_name = "inventory/update_ingredient.html"
     form_class = IngredientUpdateForm
+    success_url = reverse_lazy('ingredients')
 
 
 class IngredientDeleteView(DeleteView):
     model = Ingredient
     template_name = "inventory/delete_ingredient.html"
-    success_url = "/inventory/ingredients/"
+    success_url = reverse_lazy('ingredients')
 
 
 # Now do the views related to the RecipyRequirement s
@@ -91,22 +93,25 @@ class RecepyRequirementDeleteView(DeleteView):
 class PurchaseView(ListView):
     model = Purchase
     template_name = "inventory/purchases.html"
-    form_class = PurchaseForm
+    context_object_name = "purchases"
 
 
 class PurchaseCreateView(CreateView):
     model = Purchase
     template_name = "inventory/create_purchase.html"
     form_class = PurchaseCreateForm
+    success_url = reverse_lazy("purchases")
+
 
 
 class PurchaseUpdateView(UpdateView):
     model = Purchase
     template_name = "inventory/update_purchase.html"
     form_class = PurchaseUpdateForm
+    success_url = reverse_lazy("purchases")
 
 
 class PurchaseDeleteView(DeleteView):
     model = Purchase
     template_name = "inventory/delete_purchase.html"
-    success_url = "/inventory/purchases/"
+    success_url = reverse_lazy("purchases")

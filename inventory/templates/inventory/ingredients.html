@@ -1,0 +1,29 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+{% csrf_token %}
+
+<table id="Ingredients">
+  <tr>
+    <th>Name</th>
+    <th>Quantity</th>
+    <th>Unit</th>
+    <th>Unit Price</th>
+  </tr>
+	<tr>
+  {% for item in ingredients %}
+  </tr>
+  <tr>
+      <td>{{ item.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.unit }}</td>
+      <td>{{ item.unit_price }}</td>
+      <td><a href="{% url 'ingredient_update' item.id %}"><button>Edit</button></a></td>
+      <td><a href="{% url 'ingredient_delete' item.id %}"><button>Delete</button></a></td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'ingredient_create' %}"><button>Create</button></a>
+
+{% endblock %}

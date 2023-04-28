@@ -1,0 +1,27 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+{% csrf_token %}
+
+<table id="Purchases">
+  <tr>
+    <th>Name</th>
+    <th>Timestamp</th>
+    <th>Price</th>
+  </tr>
+	<tr>
+  {% for purchase in purchases %}
+  </tr>
+  <tr>
+      <td>{{ purchase.menu_item.title }}</td>
+      <td>{{ purchase.timestamp }}</td>
+      <td>{{ purchase.menu_item.price }}</td>
+      <td><a href="{% url 'purchase_update' purchase.id %}"><button>Edit</button></a></td>
+      <td><a href="{% url 'purchase_delete' purchase.id %}"><button>Delete</button></a></td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'purchase_create' %}"><button>Create</button></a>
+
+{% endblock %}

@@ -11,12 +11,11 @@
     {% if user.username %}
     <h3 class="header-greet">Welcome {{ user.username }}!</h3>
     {% endif %}
-    {% comment %}
-    <a href="{% url 'ingredient' %}">Manage Ingredients</a>
-    <a href="{% url 'menuitem' %}">Manage Menu Entries</a>
-    <a href="{% url 'recepyrequirement' %}">Manage Recipies</a>
-    <a href="{% url 'purchase' %}">Check Purchases</a>
-    {% endcomment %}
+
+    <a href="{% url 'ingredients' %}">Manage Ingredients</a>
+    <a href="{% url 'menu_items' %}">Manage Menu Entries and their recepies</a>
+    <a href="{% url 'purchases' %}">Check Purchases</a>
+
   </div>
 </div>
 

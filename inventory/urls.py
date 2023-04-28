@@ -5,13 +5,19 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="index"),
     # urls for Ingredients
     path("ingredients/", views.IngredientView.as_view(), name="ingredients"),
+    path("ingredients/create", views.IngredientCreateView.as_view(), name="ingredient_create"),
+    path("ingredients/delete/<pk>", views.IngredientDeleteView.as_view(), name="ingredient_delete"),
+    path("ingredients/update/<pk>", views.IngredientUpdateView.as_view(), name="ingredient_update"),
 
     # urls for Purchases
     path("purchases/", views.PurchaseView.as_view(), name="purchases"),
+    path("purchases/create", views.PurchaseCreateView.as_view(), name="purchase_create"),
+    path("purchases/delete/<pk>", views.PurchaseDeleteView.as_view(), name="purchase_delete"),
+    path("purchases/update/<pk>", views.PurchaseUpdateView.as_view(), name="purchase_update"),
 
     # urls for MenuItems
     path("menu_items/", views.MenuItemView.as_view(), name="menu_items"),
 
     # urls for RecepyRequirements
-    path("recepy_requirement/<str:menu_item_title>/", views.recepyrequirementview, name="requirement"),
+    path("recepy_requirement/requirement/<str:menu_item_title>/", views.recepyrequirementview, name="requirement"),
 ]

@@ -2,73 +2,73 @@ from django import forms
 from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 
 
-class IngredientCreateForm(forms.Form):
-    class meta:
+class IngredientCreateForm(forms.ModelForm):
+    class Meta:
         model = Ingredient
         fields = "__all__"
 
 
-class IngredientUpdateForm(forms.form):
-    class meta:
-        model = Ingredient
-        fields = ["quantity", "unit_price"]
-
-
-class IngredientForm(forms.Form):
-    class meta:
+class IngredientUpdateForm(forms.ModelForm):
+    class Meta:
         model = Ingredient
         fields = "__all__"
 
 
-class MenuItemCreateForm(forms.Form):
-    class meta:
+class IngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = "__all__"
+
+
+class MenuItemCreateForm(forms.ModelForm):
+    class Meta:
         model = MenuItem
         fields = "__all__"
 
 
-class MenuItemUpdateForm(forms.Form):
-    class meta:
+class MenuItemUpdateForm(forms.ModelForm):
+    class Meta:
         model = MenuItem
         fields = "__all__"
 
 
-class MenuItemForm(forms.Form):
-    class meta:
+class MenuItemForm(forms.ModelForm):
+    class Meta:
         model = MenuItem
         fields = "__all__"
 
 
-class RecepyRequirementCreateForm(forms.Form):
-    class meta:
+class RecepyRequirementCreateForm(forms.ModelForm):
+    class Meta:
         model = RecepyRequirement
         fields = "__all__"
 
 
-class RecepyRequirementUpdateForm(forms.Form):
-    class meta:
+class RecepyRequirementUpdateForm(forms.ModelForm):
+    class Meta:
         model = RecepyRequirement
         fields = "__all__"
 
 
-class RecepyRequirementForm(forms.Form):
-    class meta:
+class RecepyRequirementForm(forms.ModelForm):
+    class Meta:
         model = RecepyRequirement
         fields = "__all__"
 
 
-class PurchaseCreateForm(forms.Form):
-    class meta:
+class PurchaseCreateForm(forms.ModelForm):
+    class Meta:
         model = Purchase
         fields = "__all__"
 
 
-class PurchaseUpdateForm(forms.Form):
-    class meta:
+class PurchaseUpdateForm(forms.ModelForm):
+    class Meta:
         model = Purchase
         fields = "__all__"
 
 
-class PurchaseForm(forms.Form):
+class PurchaseForm(forms.ModelForm):
     class meta:
         model = Purchase
         fields = "__all__"
