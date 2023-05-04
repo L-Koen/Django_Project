@@ -5,6 +5,13 @@ from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import DeleteView, CreateView, UpdateView
 from .forms import *
+"""
+Todo:
+- creating purchases is not lowering ingredient amounts
+- Editing purchase = editing ingredient? Or limit to only date...
+- Right way to edit recipies
+- View for revenue, income, profit
+"""
 
 
 # Start to create views here

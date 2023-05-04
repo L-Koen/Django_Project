@@ -21,13 +21,28 @@ class PurchaseManager(models.Manager):
         total = 0
         purchases = Purchase.objects.all()
         for purchase in purchases:
-            total += purchase.menu_item.calculate_cost(purchase.menu_item)
+            total += purchase.menu_item.calculate_cost()
         return total
 
     def total_profit(self):
         """ Calculate total Profit
         """
         return self.total_revenue() - self.total_cost()
+
+
+class AvailableMenuItemManager(models.Manager):
+    """
+    Class to be able to query only available ManuItems
+    """
+    def get_queryset(self):
+        menu_items = MenuItem.objects.all()
+        print(menu_items)
+        print(menu_items[0].available())
+        available_items = [item.id for item in menu_items if item.available()]
+        print(available_items)
+        return super().get_queryset().filter(id__in=available_items)
+
+
 
 
 # Create your models here.
@@ -54,41 +69,46 @@ class MenuItem(models.Model):
         return self.title + " with a price of {}".format(self.price)
 
     # Include some usefull methods to make queries easier
-    def calculate_cost(self, menu_item):
+    def calculate_cost(self):
         """ Calculate cost based on price of required ingredients
         """
         cost = 0
-        requirements = menu_item.recepyrequirement_set.all()
+        requirements = self.recepyrequirement_set.all()
         for requirement in requirements:
             cost += requirement.quantity * requirement.ingredient.unit_price
         return cost
 
-    def calculate_profit(self, menu_item):
+    def calculate_profit(self):
         """ Calculate profit based on cost and menu price
         """
-        cost = menu_item.calculate_cost(menu_item)
-        profit = menu_item.price - cost
+        cost = self.calculate_cost()
+        profit = self.price - cost
         return profit
 
-    def available(self, menu_item):
+    def available(self):
         """ Check if enough quantity of all required ingredients is available
         """
         available = True
-        requirements = menu_item.recepyrequirement_set.all()
+        requirements = self.recepyrequirement_set.all()
         for requirement in requirements:
             if requirement.quantity > requirement.ingredient.quantity:
                 available = False
         return available
 
-    def purchase(self, menu_item):
-        if menu_item.available(menu_item):
-            requirements = menu_item.recepyrequirement_set.all()
+    # Normally we want all objects, but we want to be able to query
+    # available objects using a different method.
+    objects = models.Manager()
+    available_objects = AvailableMenuItemManager()
+
+    def purchase(self):
+        if self.available():
+            requirements = self.recepyrequirement_set.all()
             for requirement in requirements:
                 actual = requirement.ingredient.quantity
                 new = actual - requirement.quantity
                 requirement.ingredient.quantity = new
                 requirement.ingredient.save()
-            bought = Purchase(menu_item=menu_item)
+            bought = Purchase(menu_item=self)
             bought.save()
         else:
             raise ResourceWarning("Not enough ingredients available!")

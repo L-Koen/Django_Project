@@ -60,6 +60,9 @@ class PurchaseCreateForm(forms.ModelForm):
     class Meta:
         model = Purchase
         fields = "__all__"
+    def __init__(self, *args, **kwargs):
+        super(PurchaseCreateForm, self).__init__(*args, **kwargs)
+        self.fields['menu_item'].queryset = MenuItem.available_objects.all()
 
 
 class PurchaseUpdateForm(forms.ModelForm):
