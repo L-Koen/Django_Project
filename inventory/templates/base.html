@@ -11,7 +11,7 @@
     {% if user.username %}
     <h3 class="header-greet">Welcome {{ user.username }}!</h3>
     {% endif %}
-
+    <a href="{% url 'index' %}">Home</a>
     <a href="{% url 'ingredients' %}">Manage Ingredients</a>
     <a href="{% url 'menu_items' %}">Manage Menu Entries and their recepies</a>
     <a href="{% url 'purchases' %}">Check Purchases</a>

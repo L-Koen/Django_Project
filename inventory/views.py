@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
+from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 from django.views.generic import TemplateView, ListView
@@ -7,8 +8,6 @@ from django.views.generic.edit import DeleteView, CreateView, UpdateView
 from .forms import *
 """
 Todo:
-- creating purchases is not lowering ingredient amounts
-- Editing purchase = editing ingredient? Or limit to only date...
 - Right way to edit recipies
 - View for revenue, income, profit
 """
@@ -23,26 +22,29 @@ class HomeView(TemplateView):
 # Now do the views related to the MenuItem s
 class MenuItemView(ListView):
     model = MenuItem
-    template_name = "inventory/menuitems.html"
+    template_name = "inventory/menu_items.html"
     form_class = MenuItemForm
+    context_object_name = "menu_items"
 
 
 class MenuItemCreateView(CreateView):
     model = MenuItem
     template_name = "inventory/create_menuitem.html"
     form_class = MenuItemCreateForm
+    success_url = reverse_lazy("menu_items")
 
 
 class MenuItemUpdateView(UpdateView):
     model = MenuItem
     template_name = "inventory/update_menuitem.html"
     form_class = MenuItemUpdateForm
+    success_url = reverse_lazy("menu_items")
 
 
 class MenuItemDeleteView(DeleteView):
     model = MenuItem
     template_name = "inventory/delete_menuitem.html"
-    success_url = "/inventory/menu_items/"
+    success_url = reverse_lazy("menu_items")
 
 
 # Now do the views related to the Ingredient s
@@ -104,11 +106,21 @@ class PurchaseView(ListView):
 
 
 class PurchaseCreateView(CreateView):
+    """ Class to create purchases.
+    After validation menu_item.purchase() is called to update inventory.
+    In order to do so, the form_valid function is extended.
+    Remember, PurchaseCreateForm will only show us MenuItems for which the ingredients are available
+    """
     model = Purchase
     template_name = "inventory/create_purchase.html"
     form_class = PurchaseCreateForm
     success_url = reverse_lazy("purchases")
 
+    def form_valid(self, form):
+        super(PurchaseCreateView, self).form_valid(form)
+        form.cleaned_data['menu_item'].purchase()
+        messages.success(self.request, 'Item purchased successfully!')
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class PurchaseUpdateView(UpdateView):

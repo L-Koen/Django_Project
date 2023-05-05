@@ -1,0 +1,30 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+
+
+<table id="Menu_Items">
+  {% csrf_token %}
+  <tr>
+    <th>Title</th>
+    <th>Price</th>
+    <th>Available</th>
+  </tr>
+	<tr>
+  {% for menu_item in menu_items %}
+
+  </tr>
+  <tr>
+      <td>{{ menu_item.title }}</td>
+      <td>{{ menu_item.price }}</td>
+      <td>{{ menu_item.available }}</td>
+      <td><a href="{% url 'menu_item_update' menu_item.id %}"><button>Edit</button></a></td>
+      <td><a href="{% url 'requirement' menu_item.id %}"><button>Edit Recepy</button></a></td>
+      <td><a href="{% url 'menu_item_delete' menu_item.id %}"><button>Delete Menu Item</button></a></td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'purchase_create' %}"><button>Create</button></a>
+
+{% endblock %}

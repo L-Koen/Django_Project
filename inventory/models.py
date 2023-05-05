@@ -108,8 +108,6 @@ class MenuItem(models.Model):
                 new = actual - requirement.quantity
                 requirement.ingredient.quantity = new
                 requirement.ingredient.save()
-            bought = Purchase(menu_item=self)
-            bought.save()
         else:
             raise ResourceWarning("Not enough ingredients available!")
 
