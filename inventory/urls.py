@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -29,4 +29,11 @@ urlpatterns = [
 
     # url for financial
     path("financial/", views.financial, name="financial"),
+
+    # urls for security
+    path("accounts/", include("django.contrib.auth.urls")),
+  	# path to signup request:
+    path("signup/", views.SignUp.as_view(), name="signup"),
+  	# path to logout request:
+    path("logout/", views.logout_view, name="logout"),
 ]

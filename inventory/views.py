@@ -6,64 +6,69 @@ from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import DeleteView, CreateView, UpdateView
 from .forms import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
+from django.contrib.auth.forms import UserCreationForm
 
 
 # Start to create views here
 # First the Homeview
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "inventory/home.html"
 
 
 # Now do the views related to the MenuItem s
-class MenuItemView(ListView):
+class MenuItemView(LoginRequiredMixin, ListView):
     model = MenuItem
     template_name = "inventory/menu_items.html"
     form_class = MenuItemForm
     context_object_name = "menu_items"
 
 
-class MenuItemCreateView(CreateView):
+class MenuItemCreateView(LoginRequiredMixin, CreateView):
     model = MenuItem
     template_name = "inventory/create_menu_item.html"
     form_class = MenuItemCreateForm
     success_url = reverse_lazy("menu_items")
 
 
-class MenuItemUpdateView(UpdateView):
+class MenuItemUpdateView(LoginRequiredMixin, UpdateView):
     model = MenuItem
     template_name = "inventory/update_menu_item.html"
     form_class = MenuItemUpdateForm
     success_url = reverse_lazy("menu_items")
 
 
-class MenuItemDeleteView(DeleteView):
+class MenuItemDeleteView(LoginRequiredMixin, DeleteView):
     model = MenuItem
     template_name = "inventory/delete_menu_item.html"
     success_url = reverse_lazy("menu_items")
 
 
 # Now do the views related to the Ingredient s
-class IngredientView(ListView):
+class IngredientView(LoginRequiredMixin, ListView):
     model = Ingredient
     template_name = "inventory/ingredients.html"
     context_object_name = "ingredients"
 
 
-class IngredientCreateView(CreateView):
+class IngredientCreateView(LoginRequiredMixin, CreateView):
     model = Ingredient
     template_name = "inventory/create_ingredient.html"
     form_class = IngredientCreateForm
     success_url = reverse_lazy('ingredients')
 
 
-class IngredientUpdateView(UpdateView):
+class IngredientUpdateView(LoginRequiredMixin, UpdateView):
     model = Ingredient
     template_name = "inventory/update_ingredient.html"
     form_class = IngredientUpdateForm
     success_url = reverse_lazy('ingredients')
 
 
-class IngredientDeleteView(DeleteView):
+class IngredientDeleteView(LoginRequiredMixin, DeleteView):
     model = Ingredient
     template_name = "inventory/delete_ingredient.html"
     success_url = reverse_lazy('ingredients')
@@ -71,6 +76,7 @@ class IngredientDeleteView(DeleteView):
 
 # Now do the views related to the RecipyRequirement s
 # Requirement vie will be different, as I want to view requirements by recepy
+@login_required
 def recepyrequirementview(request, menupk):
     context = {}
     menu_item = MenuItem.objects.get(id=menupk)
@@ -80,7 +86,7 @@ def recepyrequirementview(request, menupk):
     return render(request, "inventory/recepy_requirements.html", context)
 
 
-class RecepyRequirementCreateView(CreateView):
+class RecepyRequirementCreateView(LoginRequiredMixin, CreateView):
     model = RecepyRequirement
     template_name = "inventory/create_recepyrequirement.html"
     form_class = RecepyRequirementCreateForm
@@ -99,27 +105,27 @@ class RecepyRequirementCreateView(CreateView):
         return super().form_valid(form)
 
 
-class RecepyRequirementUpdateView(UpdateView):
+class RecepyRequirementUpdateView(LoginRequiredMixin, UpdateView):
     model = RecepyRequirement
     template_name = "inventory/update_recepyrequirement.html"
     form_class = RecepyRequirementUpdateForm
     success_url = reverse_lazy('menu_items')
 
 
-class RecepyRequirementDeleteView(DeleteView):
+class RecepyRequirementDeleteView(LoginRequiredMixin, DeleteView):
     model = RecepyRequirement
     template_name = "inventory/delete_recepyrequirement.html"
     success_url = reverse_lazy('menu_items')
 
 
 # Now do the views related to the Purchase s
-class PurchaseView(ListView):
+class PurchaseView(LoginRequiredMixin, ListView):
     model = Purchase
     template_name = "inventory/purchases.html"
     context_object_name = "purchases"
 
 
-class PurchaseCreateView(CreateView):
+class PurchaseCreateView(LoginRequiredMixin, CreateView):
     """ Class to create purchases.
     After validation menu_item.purchase() is called to update inventory.
     In order to do so, the form_valid function is extended.
@@ -137,22 +143,35 @@ class PurchaseCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class PurchaseUpdateView(UpdateView):
+class PurchaseUpdateView(LoginRequiredMixin, UpdateView):
     model = Purchase
     template_name = "inventory/update_purchase.html"
     form_class = PurchaseUpdateForm
     success_url = reverse_lazy("purchases")
 
 
-class PurchaseDeleteView(DeleteView):
+class PurchaseDeleteView(LoginRequiredMixin, DeleteView):
     model = Purchase
     template_name = "inventory/delete_purchase.html"
     success_url = reverse_lazy("purchases")
 
 
+@login_required
 def financial(request):
     context = {}
     context["profit"] = Purchase.objects.total_profit()
     context["revenue"] = Purchase.objects.total_revenue()
     context["cost"] = Purchase.objects.total_cost()
     return render(request, "inventory/financial.html", context)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("index")
+
+
+# Create your class-based Signup view below:
+class SignUp(CreateView):
+  form_class = UserCreationForm
+  success_url = reverse_lazy("login")
+  template_name = "registration/signup.html"
