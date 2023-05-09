@@ -41,13 +41,13 @@ class MenuItemForm(forms.ModelForm):
 class RecepyRequirementCreateForm(forms.ModelForm):
     class Meta:
         model = RecepyRequirement
-        fields = "__all__"
+        fields = ("ingredient", "quantity")
 
 
 class RecepyRequirementUpdateForm(forms.ModelForm):
     class Meta:
         model = RecepyRequirement
-        fields = "__all__"
+        fields = ("ingredient", "quantity")
 
 
 class RecepyRequirementForm(forms.ModelForm):

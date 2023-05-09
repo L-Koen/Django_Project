@@ -1,16 +1,11 @@
-from django.shortcuts import render, redirect
-from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from .models import Ingredient, MenuItem, RecepyRequirement, Purchase
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import DeleteView, CreateView, UpdateView
 from .forms import *
-"""
-Todo:
-- Right way to edit recipies
-- View for revenue, income, profit
-"""
 
 
 # Start to create views here
@@ -29,21 +24,21 @@ class MenuItemView(ListView):
 
 class MenuItemCreateView(CreateView):
     model = MenuItem
-    template_name = "inventory/create_menuitem.html"
+    template_name = "inventory/create_menu_item.html"
     form_class = MenuItemCreateForm
     success_url = reverse_lazy("menu_items")
 
 
 class MenuItemUpdateView(UpdateView):
     model = MenuItem
-    template_name = "inventory/update_menuitem.html"
+    template_name = "inventory/update_menu_item.html"
     form_class = MenuItemUpdateForm
     success_url = reverse_lazy("menu_items")
 
 
 class MenuItemDeleteView(DeleteView):
     model = MenuItem
-    template_name = "inventory/delete_menuitem.html"
+    template_name = "inventory/delete_menu_item.html"
     success_url = reverse_lazy("menu_items")
 
 
@@ -76,26 +71,45 @@ class IngredientDeleteView(DeleteView):
 
 # Now do the views related to the RecipyRequirement s
 # Requirement vie will be different, as I want to view requirements by recepy
-def recepyrequirementview(request, menu_item_title):
-    return Http404
+def recepyrequirementview(request, menupk):
+    context = {}
+    menu_item = MenuItem.objects.get(id=menupk)
+    requirements = menu_item.recepyrequirement_set.all()
+    context["requirements"] = requirements
+    context["menu_item"] = menu_item
+    return render(request, "inventory/recepy_requirements.html", context)
 
 
 class RecepyRequirementCreateView(CreateView):
     model = RecepyRequirement
     template_name = "inventory/create_recepyrequirement.html"
     form_class = RecepyRequirementCreateForm
+    success_url = reverse_lazy('menu_items')
+
+    # To create it for a certain menu_item, we have to restrict ourselves
+    # to that item.
+    def dispatch(self, request, *args, **kwargs):
+        """ First get MenuItem
+        """
+        self.menu_item = get_object_or_404(MenuItem, pk=kwargs["menupk"])
+        return super(RecepyRequirementCreateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.menu_item = self.menu_item
+        return super().form_valid(form)
 
 
 class RecepyRequirementUpdateView(UpdateView):
     model = RecepyRequirement
     template_name = "inventory/update_recepyrequirement.html"
     form_class = RecepyRequirementUpdateForm
+    success_url = reverse_lazy('menu_items')
 
 
 class RecepyRequirementDeleteView(DeleteView):
-    model = Ingredient
+    model = RecepyRequirement
     template_name = "inventory/delete_recepyrequirement.html"
-    success_url = "/inventory/menu_items/"
+    success_url = reverse_lazy('menu_items')
 
 
 # Now do the views related to the Purchase s
@@ -134,3 +148,11 @@ class PurchaseDeleteView(DeleteView):
     model = Purchase
     template_name = "inventory/delete_purchase.html"
     success_url = reverse_lazy("purchases")
+
+
+def financial(request):
+    context = {}
+    context["profit"] = Purchase.objects.total_profit()
+    context["revenue"] = Purchase.objects.total_revenue()
+    context["cost"] = Purchase.objects.total_cost()
+    return render(request, "inventory/financial.html", context)

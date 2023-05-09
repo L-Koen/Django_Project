@@ -1,0 +1,12 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+<h4>Add a New Menu Item</h4>
+
+<form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

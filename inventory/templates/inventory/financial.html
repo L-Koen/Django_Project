@@ -1,0 +1,11 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+{% csrf_token %}
+  <h4>Financial data:</h4>
+
+<p>Total profit: {{ profit }}</p>
+<p>Total cost: {{ cost }}</p>
+<p>Total revenue: {{ revenue }}</p>
+{% endblock %}

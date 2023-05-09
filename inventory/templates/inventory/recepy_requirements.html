@@ -1,0 +1,32 @@
+{% extends "base.html"%}
+
+{% block content %}
+{% load static %}
+{% csrf_token %}
+
+<table id="Requirements for {{ context.menu_item.title }}">
+  <h4>Requirements for {{ menu_item.title }}</h4>
+  <tr>
+    <th>Name</th>
+    <th>Quantity</th>
+    <th>Unit</th>
+    <th>Unit Price</th>
+  </tr>
+  <tr>
+  {% for requirement in requirements %}
+  </tr>
+  <tr>
+      <td>{{ requirement.ingredient.name }}</td>
+      <td>{{ requirement.quantity }}</td>
+      <td>{{ requirement.ingredient.unit }}</td>
+      <td>{{ requirement.ingredient.unit_price }}</td>
+      <td><a href="{% url 'requirement_update' requirement.id %}"><button>Edit Requirement</button></a></td>
+      <td><a href="{% url 'requirement_delete' requirement.id %}"><button>Delete Requirement</button></a></td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'requirement_create' menu_item.id %}"><button>Add Requirement</button></a>
+
+</table>
+
+{% endblock %}
